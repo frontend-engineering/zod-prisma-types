@@ -8,8 +8,10 @@ import { FormattedNames } from './formattedNames';
 import {
   IMPORT_STATEMENT_REGEX,
   IMPORT_STATEMENT_REGEX_PATTERN,
+  JSDOC_SCHEMA_TAG_REGEX,
 } from '../constants';
 import { GeneratorConfig } from '../schemas';
+import { getOpenApi } from '../utils';
 
 /////////////////////////////////////////////////
 // TYPES  INTERFACE
@@ -38,6 +40,7 @@ export class ExtendedDMMFModel extends FormattedNames implements DMMF.Model {
   readonly customImports: Set<string>;
   readonly errorLocation: string;
   readonly clearedDocumentation?: string;
+  readonly openapi?: Record<string, string>;
   readonly optionalJsonFields: ExtendedDMMFField[];
   readonly optionalJsonFieldUnion: string;
   readonly writeOptionalDefaultValuesTypes: boolean;
@@ -73,6 +76,7 @@ export class ExtendedDMMFModel extends FormattedNames implements DMMF.Model {
     this.imports = docsContent.imports;
     this.customImports = docsContent.customImports;
     this.clearedDocumentation = docsContent?.documentation;
+    this.openapi = getOpenApi(model.documentation);
 
     this.optionalJsonFields = this._setOptionalJsonFields();
     this.optionalJsonFieldUnion = this._setOptionalJsonFieldUnion();
@@ -210,7 +214,9 @@ export class ExtendedDMMFModel extends FormattedNames implements DMMF.Model {
     if (!importStatements) {
       return {
         customImports: [],
-        clearedDocumentation: this.documentation,
+        clearedDocumentation: this.documentation
+          .replace(JSDOC_SCHEMA_TAG_REGEX, '')
+          .trim(),
       };
     }
 

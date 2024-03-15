@@ -3,6 +3,7 @@ import { WriteFieldOptions } from '../../types';
 
 /**
  * Writes all relevant additional zod modifiers like`.nullish().array().optional()` to a field
+ * 额外增加了 `.openapi()`
  */
 export const writeFieldAdditions = ({
   writer,
@@ -32,6 +33,10 @@ export const writeFieldAdditions = ({
     .conditionalWrite(
       writeOptionalDefaults && field.isOptionalOnDefaultValue,
       `.optional()`,
+    )
+    .conditionalWrite(
+      !!field.openapi,
+      `.openapi(${JSON.stringify(field.openapi)})`,
     )
     .write(`,`)
     .newLine();

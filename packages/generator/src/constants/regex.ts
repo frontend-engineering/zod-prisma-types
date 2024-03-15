@@ -115,3 +115,6 @@ export const IMPORT_STATEMENT_REGEX_PATTERN =
   /@zod\.(?<type>[\w]+)(\(\[)(?<imports>[\w "'${}/,;.*-]+)(\]\))/;
 
 export const IMPORT_STATEMENT_REGEX = /"(?<statement>[\w "'${}/,;.*-]+)"/;
+
+export const JSDOC_SCHEMA_TAG_REGEX =
+  /@schema\.(id|name|title|description|primary_key|searchable_columns|display_column|display_name|display_primary_key|access_type|reference|column_type|model_name|foreign_key|override_type)\s.+\n?/gm;

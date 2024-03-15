@@ -2,6 +2,8 @@ import { DMMF } from '@prisma/generator-helper';
 
 import { ExtendedDMMFFieldBase } from './01_extendedDMMFFieldBase';
 import { GeneratorConfig } from '../../schemas';
+import { JSDOC_SCHEMA_TAG_REGEX } from '../../constants';
+import { getOpenApi } from '../../utils';
 
 /////////////////////////////////////////////////
 // REGEX
@@ -24,6 +26,7 @@ export const VALIDATOR_TYPE_REGEX =
 
 export class ExtendedDMMFFieldValidatorMatch extends ExtendedDMMFFieldBase {
   protected _validatorMatch?: RegExpMatchArray;
+  readonly openapi?: Record<string, string>;
   readonly clearedDocumentation?: string;
 
   constructor(
@@ -34,6 +37,7 @@ export class ExtendedDMMFFieldValidatorMatch extends ExtendedDMMFFieldBase {
     super(field, generatorConfig, modelName);
 
     this._validatorMatch = this._getValidatorMatchArray();
+    this.openapi = getOpenApi(this.documentation);
     this.clearedDocumentation = this._getClearedDocumentation();
   }
 
@@ -45,7 +49,10 @@ export class ExtendedDMMFFieldValidatorMatch extends ExtendedDMMFFieldBase {
   private _getClearedDocumentation() {
     if (!this.documentation) return;
     return (
-      this.documentation.replace(VALIDATOR_TYPE_REGEX, '').trim() || undefined
+      this.documentation
+        .replace(VALIDATOR_TYPE_REGEX, '')
+        .replace(JSDOC_SCHEMA_TAG_REGEX, '')
+        .trim() || undefined
     );
   }
 }

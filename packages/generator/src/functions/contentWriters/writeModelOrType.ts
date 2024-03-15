@@ -112,7 +112,11 @@ export const writeModelOrType = (
         });
       });
     })
-    .write(`)`);
+    .write(`)`)
+    .conditionalWrite(
+      !!model.openapi,
+      `.openapi(${JSON.stringify(model.openapi)})`,
+    );
 
   writer
     .blankLine()
@@ -239,7 +243,7 @@ export const writeModelOrType = (
     writer
       .blankLine()
       .write(
-        `export const ${model.name}WithRelationsSchema: z.ZodType<${model.name}WithRelations> = ${model.name}Schema.merge(z.object(`,
+        `export const ${model.name}WithRelationsSchema: z.ZodObject<any> = ${model.name}Schema.merge(z.object(`,
       )
       .inlineBlock(() => {
         model.relationFields.forEach((field) => {

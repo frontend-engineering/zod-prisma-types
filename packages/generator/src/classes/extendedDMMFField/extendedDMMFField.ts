@@ -59,6 +59,8 @@ export interface ExtendedDMMFField extends DMMF.Field, FormattedNames {
    */
   readonly zodValidatorString?: string;
 
+  readonly openapi?: Record<string, string>;
+
   /**
    * Contains the string that should be used for custom errors on the field's validator.
    * @description `z.string({ invalid_type_error: "my message"})`
