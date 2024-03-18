@@ -2,6 +2,8 @@ import { writeModelFields } from '.';
 import { ExtendedDMMFModel } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
 import { writeRelation } from '../fieldWriters';
+import plur from 'pluralize'
+import _ from 'radash';
 
 //// NEEDS REFACTORING ////
 // This function is a mess and needs to be refactored into smaller, more manageable pieces.
@@ -115,7 +117,7 @@ export const writeModelOrType = (
     .write(`)`)
     .conditionalWrite(
       !!model.openapi,
-      `.openapi(${JSON.stringify(model.openapi)})`,
+      `.openapi(${JSON.stringify(writeModelOpenApi(model))})`,
     );
 
   writer
@@ -487,3 +489,23 @@ export const writeModelOrType = (
     writer.blankLine().writeLine(`export default ${model.name}Schema;`);
   }
 };
+
+export function writeModelOpenApi(model: ExtendedDMMFModel) {
+  const pk = model.fields.filter(f => f.isId)
+  if (pk.length === 0 || pk.length > 1) {
+    throw new Error(`invalid primary key length, ${pk.length}`)
+  }
+  return {
+    ...{
+      name: model.name,
+      slug: _.snake(plur(model.name)),
+      table_name: model.name,
+      class_name: model.name,
+      display_name: _.title(plur(model.name)),
+      primary_key: pk[0].name,
+      visible: true,
+      display_primary_key: true,
+    },
+    ...model.openapi,
+  }
+}
