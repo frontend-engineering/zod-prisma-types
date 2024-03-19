@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { WriteFieldOptions } from '../../types';
-import { ExtendedDMMFField } from '../../classes'
+import { ExtendedDMMFField } from '../../classes';
 import _ from 'radash';
 
 /**
@@ -44,35 +44,52 @@ export const writeFieldAdditions = ({
     .newLine();
 };
 
-
 export function writeFieldOpenApi(field: ExtendedDMMFField) {
-  if (field.isList === false && field.relationName  /* references */) {
+  if (field.relationName) {
+    if (field.isList /* associations */) {
+      return {
+        ...{
+          name: field.name,
+          display_name: _.title(field.name),
+          slug: _.snake(field.name),
+          model_name: field.type,
+          visible: true,
+          foreign_key:
+            field.relatedField &&
+            field.relatedField.relationFromFields &&
+            field.relatedField.relationFromFields[0]
+              ? field.relatedField.relationFromFields[0]
+              : null,
+          primary_key:
+            field.relatedField &&
+            field.relatedField.relationToFields &&
+            field.relatedField.relationToFields[0]
+              ? field.relatedField.relationToFields[0]
+              : null,
+        },
+        ...field.openapi,
+        associations: true /* 方便 openapi -> ui schema */,
+      };
+    }
+    /* references */
     return {
       ...{
         name: field.name,
         display_name: _.title(field.name),
         model_name: field.type,
-        foreign_key: (field.relationFromFields && field.relationFromFields[0]) ? field.relationFromFields[0] : null,
-        primary_key: (field.relationToFields && field.relationToFields[0]) ? field.relationToFields[0] : null,
+        foreign_key:
+          field.relationFromFields && field.relationFromFields[0]
+            ? field.relationFromFields[0]
+            : null,
+        primary_key:
+          field.relationToFields && field.relationToFields[0]
+            ? field.relationToFields[0]
+            : null,
         reference_type: field.isUnique ? 'has_one' : 'belongs_to',
       },
       ...field.openapi,
       references: true,
-    }
-  }
-
-  if (field.isList && field.relationName /* associations */) {
-    return {
-      ...{
-        name: field.name,
-        display_name: _.title(field.name),
-        slug: _.snake(field.name),
-        model_name: field.type,
-        visible: true,
-      },
-      ...field.openapi,
-      associations: true, /* 方便 openapi -> ui schema */
-    }
+    };
   }
 
   return {
@@ -82,5 +99,5 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
       column_source: 'table',
     },
     ...field.openapi,
-  }
+  };
 }

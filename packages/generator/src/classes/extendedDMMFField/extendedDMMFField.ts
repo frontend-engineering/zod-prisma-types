@@ -1,9 +1,9 @@
 import { DMMF } from '@prisma/generator-helper';
 
 import { OmitFieldMode } from './11_extendedDMMFFieldOmitField';
-import { ExtendedDMMFFieldZodType } from './12_extendedDMMFFieldZodType';
 import { GeneratorConfig } from '../../schemas';
 import { FormattedNames } from '../formattedNames';
+import { ExtendedDMMFFieldAssociation } from './13_extendedDMMFFieldAssociation';
 
 export interface ExtendedDMMFField extends DMMF.Field, FormattedNames {
   /**
@@ -91,6 +91,8 @@ export interface ExtendedDMMFField extends DMMF.Field, FormattedNames {
    */
   readonly zodType: string;
 
+  readonly relatedField?: DMMF.Field;
+
   /**
    * Determins if the field should be omitted in the model type.
    * Makes the code more readable when it is in a seperate method.
@@ -131,8 +133,9 @@ export interface ExtendedDMMFField extends DMMF.Field, FormattedNames {
  * - ExtendedDMMFFieldArrayValidatorString
  * - ExtendedDMMFFieldOmitField
  * - ExtendedDMMFFieldZodType
+ * - ExtendedDMMFFieldAssociation
  */
 
 export class ExtendedDMMFFieldClass
-  extends ExtendedDMMFFieldZodType
+  extends ExtendedDMMFFieldAssociation
   implements ExtendedDMMFField {}

@@ -30,7 +30,7 @@ export class ExtendedDMMFDatamodel {
 
   private _getExtendedModels(models: DMMF.Model[]) {
     return models.map(
-      (model) => new ExtendedDMMFModel(this.generatorConfig, model),
+      (model) => new ExtendedDMMFModel(this.generatorConfig, model, models),
     );
   }
 

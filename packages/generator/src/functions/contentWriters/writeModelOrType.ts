@@ -2,7 +2,7 @@ import { writeModelFields } from '.';
 import { ExtendedDMMFModel } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
 import { writeRelation } from '../fieldWriters';
-import plur from 'pluralize'
+import plur from 'pluralize';
 import _ from 'radash';
 
 //// NEEDS REFACTORING ////
@@ -491,9 +491,9 @@ export const writeModelOrType = (
 };
 
 export function writeModelOpenApi(model: ExtendedDMMFModel) {
-  const pk = model.fields.filter(f => f.isId)
+  const pk = model.fields.filter((f) => f.isId);
   if (pk.length === 0 || pk.length > 1) {
-    throw new Error(`invalid primary key length, ${pk.length}`)
+    throw new Error(`invalid primary key length, ${pk.length}`);
   }
   return {
     ...{
@@ -507,5 +507,5 @@ export function writeModelOpenApi(model: ExtendedDMMFModel) {
       display_primary_key: true,
     },
     ...model.openapi,
-  }
+  };
 }
