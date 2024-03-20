@@ -68,7 +68,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
               : null,
         },
         ...field.openapi,
-        associations: true /* 方便 openapi -> ui schema */,
       };
     }
     /* references */
@@ -88,7 +87,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
         reference_type: field.isUnique ? 'has_one' : 'belongs_to',
       },
       ...field.openapi,
-      references: true,
     };
   }
 

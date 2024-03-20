@@ -252,7 +252,12 @@ export const writeModelOrType = (
           writeRelation({ writer, field });
         });
       })
-      .write(`))`);
+      .write(`))`)
+      .conditionalWrite(
+        !!model.openapi,
+        `.openapi(${JSON.stringify(writeModelOpenApi(model))})`,
+      );
+    ;
     // .blankLine();
   }
 
