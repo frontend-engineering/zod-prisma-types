@@ -257,7 +257,6 @@ export const writeModelOrType = (
         !!model.openapi,
         `.openapi(${JSON.stringify(writeModelOpenApi(model))})`,
       );
-    ;
     // .blankLine();
   }
 
