@@ -79,12 +79,20 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
         foreign_key:
           field.relationFromFields && field.relationFromFields[0]
             ? field.relationFromFields[0]
+            : field.relatedField &&
+              field.relatedField.relationFromFields &&
+              field.relatedField.relationFromFields[0]
+            ? field.relatedField.relationFromFields[0]
             : null,
         primary_key:
           field.relationToFields && field.relationToFields[0]
             ? field.relationToFields[0]
+            : field.relatedField &&
+              field.relatedField.relationToFields &&
+              field.relatedField.relationToFields[0]
+            ? field.relatedField.relationToFields[0]
             : null,
-        reference_type: field.isUnique ? 'has_one' : 'belongs_to',
+        reference_type: field.relatedField ? 'has_one' : 'belongs_to',
       },
       ...field.openapi,
     };

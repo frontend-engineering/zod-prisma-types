@@ -22,9 +22,14 @@ export class ExtendedDMMFFieldAssociation extends ExtendedDMMFFieldZodType {
     models?: DMMF.Model[],
   ) {
     super(field, generatorConfig, modelName);
-
-    if (/* association */ field.isList && field.relationName) {
-      this.relatedField = this._setRelatedField(field, modelName, models);
+    if (field.relationName) {
+      if (
+        field.isList /* association */ ||
+        /* has_one */ (field.relationToFields &&
+          field.relationToFields.length === 0)
+      ) {
+        this.relatedField = this._setRelatedField(field, modelName, models);
+      }
     }
   }
 
