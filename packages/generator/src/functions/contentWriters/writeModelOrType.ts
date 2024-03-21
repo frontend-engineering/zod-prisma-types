@@ -498,6 +498,7 @@ export function writeModelOpenApi(model: ExtendedDMMFModel) {
   const primary_key = model.fields.filter((f) => f.isId);
   return {
     ...{
+      key_type: 'resource',
       name: model.name,
       slug: _.snake(plur(model.name)),
       table_name: model.name,
