@@ -495,10 +495,7 @@ export const writeModelOrType = (
 };
 
 export function writeModelOpenApi(model: ExtendedDMMFModel) {
-  const pk = model.fields.filter((f) => f.isId);
-  if (pk.length === 0 || pk.length > 1) {
-    throw new Error(`invalid primary key length, ${pk.length}`);
-  }
+  const primary_key = model.fields.filter((f) => f.isId);
   return {
     ...{
       name: model.name,
@@ -506,7 +503,7 @@ export function writeModelOpenApi(model: ExtendedDMMFModel) {
       table_name: model.name,
       class_name: model.name,
       display_name: _.title(plur(model.name)),
-      primary_key: pk[0].name,
+      primary_key: primary_key[0] ? primary_key[0].name : null,
       visible: true,
       display_primary_key: true,
     },
