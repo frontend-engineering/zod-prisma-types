@@ -97,7 +97,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
       key_type: 'column',
       name: field.name,
       display_name: _.title(field.name),
-      column_source: 'table',
     },
     ...field.openapi,
   };
