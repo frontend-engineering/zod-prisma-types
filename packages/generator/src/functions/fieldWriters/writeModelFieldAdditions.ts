@@ -50,7 +50,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
       return {
         ...{
           key_type: 'association',
-          name: field.name,
           display_name: _.title(field.name),
           slug: _.snake(field.name),
           model_name: field.type,
@@ -75,7 +74,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
     return {
       ...{
         key_type: 'reference',
-        name: field.name,
         display_name: _.title(field.name),
         model_name: field.type,
         foreign_key:
@@ -95,7 +93,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
   return {
     ...{
       key_type: 'column',
-      name: field.name,
       display_name: _.title(field.name),
     },
     ...field.openapi,
