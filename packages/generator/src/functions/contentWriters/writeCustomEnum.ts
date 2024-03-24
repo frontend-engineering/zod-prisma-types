@@ -7,7 +7,7 @@ export const writeCustomEnum = (
     dmmf,
     getSingleFileContent = false,
   }: ContentWriterOptions,
-  { name, values, openapi }: ExtendedDMMFEnum,
+  { name, values }: ExtendedDMMFEnum,
 ) => {
   const { useMultipleFiles } = dmmf.generatorConfig;
 
@@ -22,7 +22,7 @@ export const writeCustomEnum = (
   });
   writer
     .write(`])`)
-    .conditionalWrite(!!openapi, `.openapi(${JSON.stringify(openapi)});`)
+    // .conditionalWrite(!!openapi, `.openapi(${JSON.stringify(openapi)});`)
     .blankLine()
     .writeLine(
       `export type ${name}Type = \`\${z.infer<typeof ${name}Schema>}\``,
