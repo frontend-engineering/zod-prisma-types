@@ -5,3 +5,4 @@ export * from './getPrismaDbProvider';
 export * from './parseGeneratorConfig';
 export * from './skipGenerator';
 export * from './getOpenApi';
+export * from './writeOpenApi';

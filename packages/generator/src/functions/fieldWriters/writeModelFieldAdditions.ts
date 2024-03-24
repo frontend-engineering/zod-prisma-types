@@ -2,10 +2,12 @@
 import { WriteFieldOptions } from '../../types';
 import { ExtendedDMMFField } from '../../classes';
 import _ from 'radash';
+import { writeOpenApi } from '../../utils';
+import * as util from 'util';
 
 /**
  * Writes all relevant additional zod modifiers like`.nullish().array().optional()` to a field
- * 额外增加了 `.openapi()`
+ * add `.openapi()`
  */
 export const writeFieldAdditions = ({
   writer,
@@ -38,13 +40,27 @@ export const writeFieldAdditions = ({
     )
     .conditionalWrite(
       !!field.openapi,
-      `.openapi(${JSON.stringify(writeFieldOpenApi(field))})`,
-    )
-    .write(`,`)
-    .newLine();
+      `.openapi(${util.inspect(writeFieldOpenApi(field))})`,
+    );
+
+  Object.entries(_.group(field.openapi, (f) => f.type)).forEach(
+    ([key, value]) => {
+      writer.conditionalWrite(
+        key !== '' && Array.isArray(value) && value.length > 0,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        `.openapi(${util.inspect(writeOpenApi([key, value!]))})`,
+      );
+    },
+  );
+
+  writer.write(`,`).newLine();
 };
 
 export function writeFieldOpenApi(field: ExtendedDMMFField) {
+  const openapi = writeOpenApi([
+    '',
+    field.openapi.filter((f) => f.type === ''),
+  ]);
   if (field.relationName) {
     if (field.isList /* associations */) {
       return {
@@ -67,7 +83,7 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
               ? field.relatedField.relationToFields[0]
               : null,
         },
-        ...field.openapi,
+        ...openapi,
       };
     }
     /* references */
@@ -86,7 +102,7 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
           null,
         reference_type: field.relatedField ? 'has_one' : 'belongs_to',
       },
-      ...field.openapi,
+      ...openapi,
     };
   }
 
@@ -95,6 +111,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
       key_type: 'column',
       display_name: _.title(field.name),
     },
-    ...field.openapi,
+    ...openapi,
   };
 }

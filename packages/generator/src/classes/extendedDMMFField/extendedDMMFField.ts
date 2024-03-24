@@ -4,6 +4,7 @@ import { OmitFieldMode } from './11_extendedDMMFFieldOmitField';
 import { GeneratorConfig } from '../../schemas';
 import { FormattedNames } from '../formattedNames';
 import { ExtendedDMMFFieldAssociation } from './13_extendedDMMFFieldAssociation';
+import { Spec } from 'comment-parser';
 
 export interface ExtendedDMMFField extends DMMF.Field, FormattedNames {
   /**
@@ -59,7 +60,7 @@ export interface ExtendedDMMFField extends DMMF.Field, FormattedNames {
    */
   readonly zodValidatorString?: string;
 
-  readonly openapi?: Record<string, string>;
+  readonly openapi: Spec[];
 
   /**
    * Contains the string that should be used for custom errors on the field's validator.

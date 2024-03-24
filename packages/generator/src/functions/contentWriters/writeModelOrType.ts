@@ -4,6 +4,8 @@ import { type ContentWriterOptions } from '../../types';
 import { writeRelation } from '../fieldWriters';
 import plur from 'pluralize';
 import _ from 'radash';
+import { writeOpenApi } from '../../utils';
+import * as util from 'util';
 
 //// NEEDS REFACTORING ////
 // This function is a mess and needs to be refactored into smaller, more manageable pieces.
@@ -117,8 +119,18 @@ export const writeModelOrType = (
     .write(`)`)
     .conditionalWrite(
       !!model.openapi,
-      `.openapi(${JSON.stringify(writeModelOpenApi(model))})`,
+      `.openapi(${util.inspect(writeModelOpenApi(model))})`,
     );
+
+  Object.entries(_.group(model.openapi, (f) => f.type)).forEach(
+    ([key, value]) => {
+      writer.conditionalWrite(
+        key !== '' && Array.isArray(value) && value.length > 0,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        `.openapi(${util.inspect(writeOpenApi([key, value!]))})`,
+      );
+    },
+  );
 
   writer
     .blankLine()
@@ -502,8 +514,8 @@ export function writeModelOpenApi(model: ExtendedDMMFModel) {
       display_name: _.title(plur(model.name)),
       primary_key: primary_key[0] ? primary_key[0].name : null,
       visible: true,
-      display_primary_key: true,
+      display_primary_key: 'true',
     },
-    ...model.openapi,
+    ...writeOpenApi(['', model.openapi.filter((f) => f.type === '')]),
   };
 }

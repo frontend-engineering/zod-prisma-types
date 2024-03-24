@@ -3,6 +3,7 @@ import { DMMF } from '@prisma/generator-helper';
 import { GeneratorConfig } from '../schemas';
 import { FormattedNames } from './formattedNames';
 import { getOpenApi } from '../utils';
+import { Spec } from 'comment-parser';
 
 /////////////////////////////////////////////////
 // CLASSES
@@ -13,7 +14,7 @@ export class ExtendedDMMFEnum extends FormattedNames {
   readonly values: DMMF.EnumValue[];
   readonly dbName?: string | null;
   readonly documentation?: string;
-  readonly openapi?: Record<string, string>;
+  readonly openapi: Spec[];
 
   constructor(
     readonly generatorConfig: GeneratorConfig,

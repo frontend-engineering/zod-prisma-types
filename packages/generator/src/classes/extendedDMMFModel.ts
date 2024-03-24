@@ -12,6 +12,7 @@ import {
 } from '../constants';
 import { GeneratorConfig } from '../schemas';
 import { getOpenApi } from '../utils';
+import { Spec } from 'comment-parser';
 
 /////////////////////////////////////////////////
 // TYPES  INTERFACE
@@ -40,7 +41,7 @@ export class ExtendedDMMFModel extends FormattedNames implements DMMF.Model {
   readonly customImports: Set<string>;
   readonly errorLocation: string;
   readonly clearedDocumentation?: string;
-  readonly openapi?: Record<string, string>;
+  readonly openapi: Spec[];
   readonly optionalJsonFields: ExtendedDMMFField[];
   readonly optionalJsonFieldUnion: string;
   readonly writeOptionalDefaultValuesTypes: boolean;

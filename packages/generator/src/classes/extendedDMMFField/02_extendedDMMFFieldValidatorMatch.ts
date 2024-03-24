@@ -4,6 +4,7 @@ import { ExtendedDMMFFieldBase } from './01_extendedDMMFFieldBase';
 import { GeneratorConfig } from '../../schemas';
 import { JSDOC_SCHEMA_TAG_REGEX } from '../../constants';
 import { getOpenApi } from '../../utils';
+import { Spec } from 'comment-parser';
 
 /////////////////////////////////////////////////
 // REGEX
@@ -26,7 +27,7 @@ export const VALIDATOR_TYPE_REGEX =
 
 export class ExtendedDMMFFieldValidatorMatch extends ExtendedDMMFFieldBase {
   protected _validatorMatch?: RegExpMatchArray;
-  readonly openapi?: Record<string, string>;
+  readonly openapi: Spec[];
   readonly clearedDocumentation?: string;
 
   constructor(
