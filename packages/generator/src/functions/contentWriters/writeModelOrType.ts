@@ -120,19 +120,7 @@ export const writeModelOrType = (
     .conditionalWrite(
       !!model.openapi,
       `.resource(${util.inspect(writeModelOpenApi(model))})`,
-    );
-
-  Object.entries(_.group(model.openapi, (f) => f.type)).forEach(
-    ([key, value]) => {
-      writer.conditionalWrite(
-        key !== '' && Array.isArray(value) && value.length > 0,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        `.resource(${util.inspect(writeOpenApi([key, value!]))})`,
-      );
-    },
-  );
-
-  writer
+    )
     .blankLine()
     .write(`export type ${model.name} = z.infer<typeof ${model.name}Schema>`);
 
@@ -504,6 +492,17 @@ export const writeModelOrType = (
 
 export function writeModelOpenApi(model: ExtendedDMMFModel) {
   const primary_key = model.fields.filter((f) => f.isId);
+  const openapi = Object.entries(_.group(model.openapi, (f) => f.type)).reduce(
+    (acc, cur) => {
+      const [key, value] = cur;
+      acc = {
+        ...acc,
+        ...writeOpenApi([key, value!]),
+      };
+      return acc;
+    },
+    {},
+  );
   return {
     ...{
       name: model.name,
@@ -515,6 +514,6 @@ export function writeModelOpenApi(model: ExtendedDMMFModel) {
       visible: true,
       display_primary_key: 'true',
     },
-    ...writeOpenApi(['', model.openapi.filter((f) => f.type === '')]),
+    ...openapi,
   };
 }

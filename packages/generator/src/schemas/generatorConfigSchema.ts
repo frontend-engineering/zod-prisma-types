@@ -79,6 +79,7 @@ export const configSchema = z.object({
     .transform((val) => val === 'true'),
   inputTypePath: z.string().optional().default('inputTypeSchemas'), // currently only used internally
   outputTypePath: z.string().optional().default('outputTypeSchemas'), // currently only used internally
+  extendZod: z.string().optional().default(''),
 });
 
 export type GeneratorConfig = z.infer<typeof configSchema>;

@@ -52,26 +52,23 @@ export const writeFieldAdditions = ({
     .conditionalWrite(
       !!field.openapi,
       `.${openapiMethod}(${util.inspect(writeFieldOpenApi(field))})`,
-    );
-
-  Object.entries(_.group(field.openapi, (f) => f.type)).forEach(
-    ([key, value]) => {
-      writer.conditionalWrite(
-        key !== '' && Array.isArray(value) && value.length > 0,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        `.${openapiMethod}(${util.inspect(writeOpenApi([key, value!]))})`,
-      );
-    },
-  );
-
-  writer.write(`,`).newLine();
+    )
+    .write(`,`)
+    .newLine();
 };
 
 export function writeFieldOpenApi(field: ExtendedDMMFField) {
-  const openapi = writeOpenApi([
-    '',
-    field.openapi.filter((f) => f.type === ''),
-  ]);
+  const openapi = Object.entries(_.group(field.openapi, (f) => f.type)).reduce(
+    (acc, cur) => {
+      const [key, value] = cur;
+      acc = {
+        ...acc,
+        ...writeOpenApi([key, value!]),
+      };
+      return acc;
+    },
+    {},
+  );
   if (field.relationName) {
     if (field.isList /* associations */) {
       return {

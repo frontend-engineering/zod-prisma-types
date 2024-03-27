@@ -8,7 +8,7 @@ export const writeSingleFileImportStatements: WriteStatements = (
   dmmf,
   { writer, writeImport },
 ) => {
-  const { prismaClientPath } = dmmf.generatorConfig;
+  const { prismaClientPath, extendZod } = dmmf.generatorConfig;
   writeImport('{ z }', 'zod');
 
   // Prisma should primarily be imported as a type, but if there are json fields,
@@ -19,6 +19,11 @@ export const writeSingleFileImportStatements: WriteStatements = (
     writeImport(`{ Prisma }`, `${prismaClientPath}`);
   } else {
     writeImport(`type { Prisma }`, `${prismaClientPath}`);
+  }
+
+  if (extendZod != '') {
+    writeImport(`{ extendZod }`, `${extendZod}`);
+    writer.writeLine(`extendZod(z);`);
   }
 
   if (dmmf.customImports) {
