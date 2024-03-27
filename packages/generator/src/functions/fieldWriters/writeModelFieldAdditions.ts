@@ -16,6 +16,17 @@ export const writeFieldAdditions = ({
 }: WriteFieldOptions) => {
   const { writeNullishInModelTypes } = field.generatorConfig;
 
+  let openapiMethod: 'association' | 'reference' | 'column';
+  if (field.relationName) {
+    if (field.isList) {
+      openapiMethod = 'association';
+    } else {
+      openapiMethod = 'reference';
+    }
+  } else {
+    openapiMethod = 'column';
+  }
+
   writer
     .conditionalWrite(field.isList, `.array()`)
     .conditionalWrite(
@@ -40,7 +51,7 @@ export const writeFieldAdditions = ({
     )
     .conditionalWrite(
       !!field.openapi,
-      `.openapi(${util.inspect(writeFieldOpenApi(field))})`,
+      `.${openapiMethod}(${util.inspect(writeFieldOpenApi(field))})`,
     );
 
   Object.entries(_.group(field.openapi, (f) => f.type)).forEach(
@@ -48,7 +59,7 @@ export const writeFieldAdditions = ({
       writer.conditionalWrite(
         key !== '' && Array.isArray(value) && value.length > 0,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        `.openapi(${util.inspect(writeOpenApi([key, value!]))})`,
+        `.${openapiMethod}(${util.inspect(writeOpenApi([key, value!]))})`,
       );
     },
   );
@@ -65,7 +76,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
     if (field.isList /* associations */) {
       return {
         ...{
-          key_type: 'association',
           display_name: _.title(field.name),
           slug: _.snake(field.name),
           model_name: field.type,
@@ -89,7 +99,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
     /* references */
     return {
       ...{
-        key_type: 'reference',
         display_name: _.title(field.name),
         model_name: field.type,
         foreign_key:
@@ -108,7 +117,6 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
 
   return {
     ...{
-      key_type: 'column',
       display_name: _.title(field.name),
       column_type: field.type,
     },

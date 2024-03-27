@@ -119,7 +119,7 @@ export const writeModelOrType = (
     .write(`)`)
     .conditionalWrite(
       !!model.openapi,
-      `.openapi(${util.inspect(writeModelOpenApi(model))})`,
+      `.resource(${util.inspect(writeModelOpenApi(model))})`,
     );
 
   Object.entries(_.group(model.openapi, (f) => f.type)).forEach(
@@ -127,7 +127,7 @@ export const writeModelOrType = (
       writer.conditionalWrite(
         key !== '' && Array.isArray(value) && value.length > 0,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        `.openapi(${util.inspect(writeOpenApi([key, value!]))})`,
+        `.resource(${util.inspect(writeOpenApi([key, value!]))})`,
       );
     },
   );
@@ -506,7 +506,6 @@ export function writeModelOpenApi(model: ExtendedDMMFModel) {
   const primary_key = model.fields.filter((f) => f.isId);
   return {
     ...{
-      key_type: 'resource',
       name: model.name,
       slug: _.snake(plur(model.name)),
       table_name: model.name,
