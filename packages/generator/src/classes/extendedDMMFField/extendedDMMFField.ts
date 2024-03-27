@@ -60,7 +60,7 @@ export interface ExtendedDMMFField extends DMMF.Field, FormattedNames {
    */
   readonly zodValidatorString?: string;
 
-  readonly openapi: Spec[];
+  readonly openapi?: Spec[];
 
   /**
    * Contains the string that should be used for custom errors on the field's validator.

@@ -41,7 +41,7 @@ export class ExtendedDMMFModel extends FormattedNames implements DMMF.Model {
   readonly customImports: Set<string>;
   readonly errorLocation: string;
   readonly clearedDocumentation?: string;
-  readonly openapi: Spec[];
+  readonly openapi?: Spec[];
   readonly optionalJsonFields: ExtendedDMMFField[];
   readonly optionalJsonFieldUnion: string;
   readonly writeOptionalDefaultValuesTypes: boolean;
@@ -81,7 +81,9 @@ export class ExtendedDMMFModel extends FormattedNames implements DMMF.Model {
     this.imports = docsContent.imports;
     this.customImports = docsContent.customImports;
     this.clearedDocumentation = docsContent?.documentation;
-    this.openapi = getOpenApi(model.documentation);
+    if (this.generatorConfig.extendZod !== '') {
+      this.openapi = getOpenApi(model.documentation);
+    }
 
     this.optionalJsonFields = this._setOptionalJsonFields();
     this.optionalJsonFieldUnion = this._setOptionalJsonFieldUnion();

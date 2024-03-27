@@ -58,6 +58,7 @@ export const writeFieldAdditions = ({
 };
 
 export function writeFieldOpenApi(field: ExtendedDMMFField) {
+  if (!field.openapi) return {};
   const openapi = Object.entries(_.group(field.openapi, (f) => f.type)).reduce(
     (acc, cur) => {
       const [key, value] = cur;

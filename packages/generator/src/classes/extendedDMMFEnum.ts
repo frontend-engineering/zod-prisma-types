@@ -14,7 +14,7 @@ export class ExtendedDMMFEnum extends FormattedNames {
   readonly values: DMMF.EnumValue[];
   readonly dbName?: string | null;
   readonly documentation?: string;
-  readonly openapi: Spec[];
+  readonly openapi?: Spec[];
 
   constructor(
     readonly generatorConfig: GeneratorConfig,
@@ -26,6 +26,8 @@ export class ExtendedDMMFEnum extends FormattedNames {
     this.values = enums.values;
     this.dbName = enums.dbName;
     this.documentation = enums.documentation;
-    this.openapi = getOpenApi(enums.documentation);
+    if (this.generatorConfig.extendZod !== '') {
+      this.openapi = getOpenApi(enums.documentation);
+    }
   }
 }

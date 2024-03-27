@@ -492,6 +492,7 @@ export const writeModelOrType = (
 
 export function writeModelOpenApi(model: ExtendedDMMFModel) {
   const primary_key = model.fields.filter((f) => f.isId);
+  if (!model.openapi) return {};
   const openapi = Object.entries(_.group(model.openapi, (f) => f.type)).reduce(
     (acc, cur) => {
       const [key, value] = cur;

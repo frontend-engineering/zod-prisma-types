@@ -27,7 +27,7 @@ export const VALIDATOR_TYPE_REGEX =
 
 export class ExtendedDMMFFieldValidatorMatch extends ExtendedDMMFFieldBase {
   protected _validatorMatch?: RegExpMatchArray;
-  readonly openapi: Spec[];
+  readonly openapi?: Spec[];
   readonly clearedDocumentation?: string;
 
   constructor(
@@ -38,7 +38,9 @@ export class ExtendedDMMFFieldValidatorMatch extends ExtendedDMMFFieldBase {
     super(field, generatorConfig, modelName);
 
     this._validatorMatch = this._getValidatorMatchArray();
-    this.openapi = getOpenApi(this.documentation);
+    if (this.generatorConfig.extendZod !== '') {
+      this.openapi = getOpenApi(this.documentation);
+    }
     this.clearedDocumentation = this._getClearedDocumentation();
   }
 
