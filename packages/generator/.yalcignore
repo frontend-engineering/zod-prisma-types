@@ -1,5 +1,0 @@
-dist/**/*
-!dist/generator.bundle.js
-!dist/generator.bundle.d.ts
-!dist/bin.js
-!dist/generatorHandler.js
