@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { WriteFieldOptions } from '../../types';
 import { ExtendedDMMFField } from '../../classes';
-import _ from 'radash';
+import * as  _ from 'radash';
 import { writeOpenApi } from '../../utils';
 import * as util from 'util';
 

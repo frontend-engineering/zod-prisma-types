@@ -4,8 +4,8 @@
   "description": "Generates zod schemas from Prisma models with advanced validation",
   "author": "Chris Hörmann",
   "license": "MIT",
-  "main": "dist/generator.js",
-  "types": "dist/generator.d.ts",
+  "main": "dist/generator.bundle.js",
+  "types": "dist/generator.bundle.d.ts",
   "keywords": [
     "zod",
     "prisma",
@@ -44,7 +44,13 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.4",
     "typescript": "^4.9.5",
-    "vitest": "^0.24.5"
+    "vitest": "^0.24.5",
+    "rollup": "^4.9.4",
+    "rollup-plugin-dts": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "consola": "^3.2.3",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "fs-extra": "^11.2.0"
   },
   "dependencies": {
     "@prisma/generator-helper": "^4.13.0",

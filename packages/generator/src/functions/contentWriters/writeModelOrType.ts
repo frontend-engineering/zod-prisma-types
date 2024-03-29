@@ -3,7 +3,7 @@ import { ExtendedDMMFModel } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
 import { writeRelation } from '../fieldWriters';
 import plur from 'pluralize';
-import _ from 'radash';
+import * as  _ from 'radash';
 import { writeOpenApi } from '../../utils';
 import * as util from 'util';
 
