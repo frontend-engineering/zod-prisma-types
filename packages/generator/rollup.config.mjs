@@ -1,21 +1,32 @@
 import dts from 'rollup-plugin-dts'
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
 import fs from 'fs-extra'
-
+import consola from 'consola'
+import { execSync } from 'child_process'
 import { fileURLToPath } from 'url'
 import * as path from 'path'
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-// import consola from 'consola'
 const packageJson = fs.readJSONSync(path.join(__dirname, 'package.json'))
+
+const postbuild = () => {
+    return {
+        async generateBundle() {
+            consola.start(`yalc publish`)
+            execSync(`yalc publish --push --changed`, {
+                cwd: __dirname,
+                stdio: 'inherit'
+            })
+        },
+    }
+}
 
 const config = [
     {
-        // path to your declaration files root
         input: path.join(__dirname, 'dist/generator.js'),
         output: [
             {
-                file: path.join(__dirname, `dist/generator.bundle.js`),
+                file: path.join(__dirname, `dist/bundle/generator.js`),
                 format: 'cjs',
                 interop: 'auto'
             },
@@ -26,7 +37,6 @@ const config = [
         ],
         plugins: [
             nodeResolve(),
-            // commonjs(),
         ],
         watch: {
             chokidar: true,
@@ -34,11 +44,10 @@ const config = [
         },
     },
     {
-        // path to your declaration files root
         input: path.join(__dirname, 'dist/generator.d.ts'),
         output: [
             {
-                file: path.join(__dirname, `dist/generator.bundle.d.ts`),
+                file: path.join(__dirname, `dist/bundle/generator.d.ts`),
                 format: 'es',
             },
         ],
@@ -49,6 +58,25 @@ const config = [
             chokidar: true,
             clearScreen: false,
         },
+    },
+    {
+        input: path.join(__dirname, 'dist/bin.js'),
+        output: [
+            {
+                file: path.join(__dirname, `dist/bundle/bin.js`),
+                format: 'cjs',
+                interop: 'auto'
+            },
+        ],
+        external: [
+            '@prisma/generator-helper',
+            'zod',
+            './generator'
+        ],
+        plugins: [
+            nodeResolve(),
+            postbuild()
+        ]
     },
 ]
 

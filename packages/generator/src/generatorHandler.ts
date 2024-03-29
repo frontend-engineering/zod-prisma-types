@@ -1,7 +1,14 @@
-const { generatorHandler } = require('@prisma/generator-helper');
-const { z } = require('zod');
+import { generatorHandler } from '@prisma/generator-helper';
+import { z } from 'zod';
 
-const { DirectoryHelper, ExtendedDMMF, generateMultipleFiles, generateSingleFile, skipGenerator, parseGeneratorConfig } = require('./generator.bundle.js');
+import {
+  DirectoryHelper,
+  ExtendedDMMF,
+  generateMultipleFiles,
+  generateSingleFile,
+  skipGenerator,
+  parseGeneratorConfig,
+} from './generator';
 
 /////////////////////////////////////////
 // SCHEMAS
@@ -23,7 +30,6 @@ generatorHandler({
       prettyName: 'Zod Prisma Types',
     };
   },
-  // @ts-expect-error
   onGenerate: async (generatorOptions) => {
     if (skipGenerator()) return;
 
