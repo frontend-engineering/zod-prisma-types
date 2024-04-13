@@ -1,5 +1,5 @@
 import { getDMMF } from '@prisma/internals';
-import fs from 'fs';
+import * as fs from 'fs';
 
 export const loadDMMF = async (schemaPath: string) => {
   const datamodel = fs.readFileSync(schemaPath, 'utf-8');

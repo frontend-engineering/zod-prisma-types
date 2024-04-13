@@ -1,5 +1,5 @@
 import CodeBlockWriter, { type Options } from 'code-block-writer';
-import fs from 'fs';
+import * as fs from 'fs';
 
 import { DirectoryHelper } from './directoryHelper';
 

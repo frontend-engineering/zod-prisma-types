@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { WriteFieldOptions } from '../../types';
 import { ExtendedDMMFField } from '../../classes';
-import * as  _ from 'radash';
+import * as _ from 'radash';
 import { writeOpenApi } from '../../utils';
 import * as util from 'util';
+import { omitBy, isUndefined } from 'lodash';
 
 /**
  * Writes all relevant additional zod modifiers like`.nullish().array().optional()` to a field
@@ -113,11 +114,19 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
     };
   }
 
-  return {
-    ...{
-      display_name: _.title(field.name),
-      column_type: field.type,
+  return omitBy(
+    {
+      ...{
+        display_name: _.title(field.name),
+        column_type: field.type,
+      },
+      ...openapi,
+      visible: !('visible' in openapi)
+        ? undefined
+        : openapi.visible === 'false'
+        ? false
+        : true,
     },
-    ...openapi,
-  };
+    isUndefined,
+  );
 }

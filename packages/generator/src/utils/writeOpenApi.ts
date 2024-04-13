@@ -1,5 +1,5 @@
 import { Spec } from 'comment-parser';
-import * as  _ from 'radash';
+import * as _ from 'radash';
 
 export function writeOpenApi(openapi: [string, Spec[]]) {
   const [plugin, tags] = openapi;
