@@ -2,7 +2,7 @@
 import { WriteFieldOptions } from '../../types';
 import { ExtendedDMMFField } from '../../classes';
 import * as _ from 'radash';
-import { writeOpenApi } from '../../utils';
+import { writeOpenApi, visible } from '../../utils';
 import * as util from 'util';
 import { omitBy, isUndefined } from 'lodash';
 
@@ -73,45 +73,55 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
   );
   if (field.relationName) {
     if (field.isList /* associations */) {
-      return {
-        ...{
-          display_name: _.title(field.name),
-          slug: _.snake(field.name),
-          model_name: field.type,
-          visible: true,
-          foreign_key:
-            field.relatedField &&
-            field.relatedField.relationFromFields &&
-            field.relatedField.relationFromFields[0]
-              ? field.relatedField.relationFromFields[0]
-              : null,
-          primary_key:
-            field.relatedField &&
-            field.relatedField.relationToFields &&
-            field.relatedField.relationToFields[0]
-              ? field.relatedField.relationToFields[0]
-              : null,
+      return omitBy(
+        {
+          ...{
+            display_name: _.title(field.name),
+            slug: _.snake(field.name),
+            model_name: field.type,
+            visible: true,
+            foreign_key:
+              field.relatedField &&
+              field.relatedField.relationFromFields &&
+              field.relatedField.relationFromFields[0]
+                ? field.relatedField.relationFromFields[0]
+                : null,
+            primary_key:
+              field.relatedField &&
+              field.relatedField.relationToFields &&
+              field.relatedField.relationToFields[0]
+                ? field.relatedField.relationToFields[0]
+                : null,
+          },
+          ...openapi,
+          visible: visible(openapi),
         },
-        ...openapi,
-      };
+        isUndefined,
+      );
     }
     /* references */
-    return {
-      ...{
-        display_name: _.title(field.name),
-        model_name: field.type,
-        foreign_key:
-          field.relationFromFields?.[0] ||
-          field.relatedField?.relationFromFields?.[0] ||
-          null,
-        primary_key:
-          field.relationToFields?.[0] ||
-          field.relatedField?.relationToFields?.[0] ||
-          null,
-        reference_type: field.relatedField ? 'has_one' : 'belongs_to',
+    return omitBy(
+      {
+        ...{
+          display_name: _.title(field.name),
+          model_name: field.type,
+          foreign_key:
+            field.relationFromFields?.[0] ||
+            field.relatedField?.relationFromFields?.[0] ||
+            null,
+          primary_key:
+            field.relationToFields?.[0] ||
+            field.relatedField?.relationToFields?.[0] ||
+            null,
+          reference_type: field.relatedField ? 'has_one' : 'belongs_to',
+        },
+        ...openapi,
+        visible: field.relatedField
+          ? /* has_one visible is required */ visible(openapi)
+          : /* has_one visible is not required, it's required in primary_key column */ undefined,
       },
-      ...openapi,
-    };
+      isUndefined,
+    );
   }
 
   return omitBy(
@@ -121,11 +131,7 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
         column_type: field.type,
       },
       ...openapi,
-      visible: !('visible' in openapi)
-        ? undefined
-        : openapi.visible === 'false'
-        ? false
-        : true,
+      visible: visible(openapi),
     },
     isUndefined,
   );

@@ -4,8 +4,9 @@ import { type ContentWriterOptions } from '../../types';
 import { writeRelation } from '../fieldWriters';
 import plur from 'pluralize';
 import * as _ from 'radash';
-import { writeOpenApi } from '../../utils';
+import { writeOpenApi, visible } from '../../utils';
 import * as util from 'util';
+import { omitBy, isUndefined } from 'lodash';
 
 //// NEEDS REFACTORING ////
 // This function is a mess and needs to be refactored into smaller, more manageable pieces.
@@ -504,17 +505,21 @@ export function writeModelOpenApi(model: ExtendedDMMFModel) {
     },
     {},
   );
-  return {
-    ...{
-      name: model.name,
-      slug: _.snake(plur(model.name)),
-      table_name: model.name,
-      class_name: model.name,
-      display_name: _.title(plur(model.name)),
-      primary_key: primary_key[0] ? primary_key[0].name : null,
-      visible: true,
-      display_primary_key: 'true',
+  return omitBy(
+    {
+      ...{
+        name: model.name,
+        slug: _.snake(plur(model.name)),
+        table_name: model.name,
+        class_name: model.name,
+        display_name: _.title(plur(model.name)),
+        primary_key: primary_key[0] ? primary_key[0].name : null,
+        visible: true,
+        display_primary_key: 'true',
+      },
+      ...openapi,
+      visible: visible(openapi),
     },
-    ...openapi,
-  };
+    isUndefined,
+  );
 }

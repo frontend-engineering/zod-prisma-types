@@ -13,3 +13,11 @@ export function writeOpenApi(openapi: [string, Spec[]]) {
     [`x-${plugin}`]: openapiRet,
   };
 }
+
+export function visible(openapi: {}) {
+  return !('visible' in openapi)
+    ? true
+    : openapi.visible === 'false'
+    ? false
+    : true;
+}
