@@ -131,7 +131,12 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
         column_type: field.type,
       },
       ...openapi,
-      visible: visible(openapi),
+      visible: field.generatorConfig.defaultInvisibleField.indexOf(field.name) > -1
+        ? false 
+        : visible(openapi),
+      access_type: field.generatorConfig.defaultReadOnlyField.indexOf(field.name) > -1
+        ? 'read_only'
+        : 'read_write',
     },
     isUndefined,
   );
