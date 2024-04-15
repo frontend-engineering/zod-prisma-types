@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "@prisma/generator-helper": "^4.13.0",
+    "@prisma/internals": "^4.13.0",
     "code-block-writer": "^11.0.3",
     "lodash": "^4.17.21",
     "zod": "^3.21.1",
