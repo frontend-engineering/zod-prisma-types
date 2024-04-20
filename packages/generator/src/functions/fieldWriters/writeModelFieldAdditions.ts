@@ -63,13 +63,25 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
   const openapi = Object.entries(_.group(field.openapi, (f) => f.type)).reduce(
     (acc, cur) => {
       const [key, value] = cur;
-      acc = {
-        ...acc,
-        ...writeOpenApi([key, value!]),
-      };
+      const openapi = writeOpenApi([key, value!]);
+      if (openapi.plugin) {
+        acc = {
+          ...acc,
+          plugins: {
+            ...(acc['plugins'] as Record<string, unknown>),
+            [openapi.plugin]: openapi.openapi,
+          },
+        };
+      } else {
+        const openapi = writeOpenApi([key, value!]);
+        acc = {
+          ...acc,
+          ...openapi,
+        };
+      }
       return acc;
     },
-    {},
+    {} as Record<string, unknown>,
   );
   if (field.relationName) {
     if (field.isList /* associations */) {
@@ -131,12 +143,14 @@ export function writeFieldOpenApi(field: ExtendedDMMFField) {
         column_type: field.type,
       },
       ...openapi,
-      visible: field.generatorConfig.defaultInvisibleField.indexOf(field.name) > -1
-        ? false 
-        : visible(openapi),
-      access_type: field.generatorConfig.defaultReadOnlyField.indexOf(field.name) > -1
-        ? 'read_only'
-        : 'read_write',
+      visible:
+        field.generatorConfig.defaultInvisibleField.indexOf(field.name) > -1
+          ? false
+          : visible(openapi),
+      access_type:
+        field.generatorConfig.defaultReadOnlyField.indexOf(field.name) > -1
+          ? 'read_only'
+          : 'read_write',
     },
     isUndefined,
   );

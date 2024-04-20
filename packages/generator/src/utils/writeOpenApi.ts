@@ -10,7 +10,8 @@ export function writeOpenApi(openapi: [string, Spec[]]) {
   );
   if (plugin === '') return openapiRet;
   return {
-    [`x-${plugin}`]: openapiRet,
+    plugin: plugin,
+    openapi: openapiRet,
   };
 }
 

@@ -497,13 +497,25 @@ export function writeModelOpenApi(model: ExtendedDMMFModel) {
   const openapi = Object.entries(_.group(model.openapi, (f) => f.type)).reduce(
     (acc, cur) => {
       const [key, value] = cur;
-      acc = {
-        ...acc,
-        ...writeOpenApi([key, value!]),
-      };
+      const openapi = writeOpenApi([key, value!]);
+      if (openapi.plugin) {
+        acc = {
+          ...acc,
+          plugins: {
+            ...(acc['plugins'] as Record<string, unknown>),
+            [openapi.plugin]: openapi.openapi,
+          },
+        };
+      } else {
+        const openapi = writeOpenApi([key, value!]);
+        acc = {
+          ...acc,
+          ...openapi,
+        };
+      }
       return acc;
     },
-    {},
+    {} as Record<string, unknown>,
   );
   return omitBy(
     {
